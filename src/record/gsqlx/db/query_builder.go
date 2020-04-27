@@ -57,8 +57,18 @@ func (qb QB) BindModel(modelPtr Model) QB {
 	return qb
 }
 
-func (qb QB) Where() QB {
+func (qb QB) CoreWhere(wheres []*WhereCondition) (sql string, sqlValues []interface{}) {
+	columnNameList := []string{}
+	sql = ` where `
 
-	return qb
+	if len(wheres) == 0 {
+		return
+	}
+	for _, where := range wheres {
+		columnNameList = append(columnNameList,  where.ColumnName + where.Operator + `?`)
+		sqlValues = append(sqlValues, where.Value)
+	}
+	sql += strings.Join(columnNameList, ` AND `)
+	return
 }
 

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"reflect"
 	"src/record/gsqlx/config"
@@ -11,6 +12,7 @@ import (
 
 type DataBase struct {
 	Core *sqlx.DB
+	Wheres []*WhereCondition
 }
 
 func NewDataBase(params config.DBConnectParams)(dataBase DataBase){
@@ -22,13 +24,13 @@ func NewDataBase(params config.DBConnectParams)(dataBase DataBase){
 		params.Charset)
 	db, err := sqlx.Open(config.Get().DriverName, dbConnectParams)
 	if err != nil {
-		panic(err)
+		panic(errors.New("mysql connect error"))
 	}
 	dataBase.Core = db
 	return
 }
 
-func getPtrElem(ptr interface{}) (prtValue reflect.Value, isPtr bool) {
+func GetPtrElem(ptr interface{}) (prtValue reflect.Value, isPtr bool) {
 	valueOf := reflect.ValueOf(ptr)
 	if valueOf.Kind() != reflect.Ptr {
 		return
@@ -43,7 +45,7 @@ func (db DataBase) Create(modelPtr Model){
 
 func (db DataBase) coreCreate(modelPtr Model){
 	//获取指针值
-	valueOf, isPtr := getPtrElem(modelPtr)
+	valueOf, isPtr := GetPtrElem(modelPtr)
 	if isPtr == false {
 		panic(errors.New("param not pointer"))
 	}
@@ -84,7 +86,7 @@ func (db DataBase) Update(modelPtr Model){
 }
 
 func (db DataBase) CoreUpdate(modelPtr Model){
-	valueOf, isPtr := getPtrElem(modelPtr)
+	valueOf, isPtr := GetPtrElem(modelPtr)
 	if isPtr == false {
 		panic(errors.New("param not pointer"))
 	}
@@ -126,6 +128,10 @@ func (DataBase) Delete(){
 
 func (DataBase) OneID( id interface{}){
 
+}
+
+func (db DataBase) Find(ptr Model, id interface{}){
+	
 }
 
 
