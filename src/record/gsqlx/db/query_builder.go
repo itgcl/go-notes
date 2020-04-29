@@ -8,6 +8,7 @@ import (
 
 type QB struct {
 	Table	string
+	Select  []string
 	Insert map[string]interface{}
 	Update map[string]interface{}
 }
@@ -60,7 +61,6 @@ func (qb QB) BindModel(modelPtr Model) QB {
 func (qb QB) CoreWhere(wheres []*WhereCondition) (sql string, sqlValues []interface{}) {
 	columnNameList := []string{}
 	sql = ` where `
-
 	if len(wheres) == 0 {
 		return
 	}
@@ -72,3 +72,29 @@ func (qb QB) CoreWhere(wheres []*WhereCondition) (sql string, sqlValues []interf
 	return
 }
 
+func (qb QB) CoreOrWhere(wheres []*OrWhereCondition) (sql string, sqlValues []interface{}) {
+	columnNameList := []string{}
+	sql = ` where `
+	if len(wheres) == 0 {
+		return
+	}
+	for _, where := range wheres {
+		columnNameList = append(columnNameList,  where.ColumnName + where.Operator + `?`)
+		sqlValues = append(sqlValues, where.Value)
+	}
+	sql += strings.Join(columnNameList, ` OR `)
+	return
+}
+
+func (qb QB) CoreFind(ID string) (sql string, sqlValues[]interface{})  {
+	sql = `SELECT `
+	return
+}
+
+func (qb *QB) CoreSelect(fieldList []string) *QB {
+	if len(fieldList) == 0 {
+		fieldList = append(fieldList, `*`)
+	}
+	qb.Select = fieldList
+	return qb
+}

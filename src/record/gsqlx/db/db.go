@@ -12,7 +12,7 @@ import (
 
 type DataBase struct {
 	Core *sqlx.DB
-	Wheres []*WhereCondition
+	search *Search
 }
 
 func NewDataBase(params config.DBConnectParams)(dataBase DataBase){
@@ -130,8 +130,28 @@ func (DataBase) OneID( id interface{}){
 
 }
 
-func (db DataBase) Find(ptr Model, id interface{}){
-	
+func (db DataBase) Find(modelPtr Model, ID interface{}){
+
+	_, isPtr := GetPtrElem(modelPtr)
+	if isPtr == false {
+		panic(errors.New("param not pointer"))
+	}
+	//sql, values := qb.BindModel(modelPtr).CoreWhere(db.Wheres)
+	//fmt.Println(.BindModel(modelPtr).CoreWhere(db.Wheres))
+}
+
+func (db DataBase) Select(fieldNameParams ...string) DataBase{
+	qb := QB{}
+	fieldNameList := []string{}
+	for i:= 0; i < len(fieldNameParams) ; i++ {
+		fieldNameList = append(fieldNameList, "`" + fieldNameParams[i] + "`")
+	}
+	qb.CoreSelect(fieldNameList)
+	return db
 }
 
 
+func (db DataBase) Where(condition ...interface{}) *DataBase {
+	return db.search.Where(condition...)
+
+}
