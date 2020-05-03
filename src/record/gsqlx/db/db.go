@@ -12,7 +12,7 @@ import (
 
 type DataBase struct {
 	Core *sqlx.DB
-	search *Search
+	QB *QB
 }
 
 func NewDataBase(params config.DBConnectParams)(dataBase DataBase){
@@ -22,11 +22,15 @@ func NewDataBase(params config.DBConnectParams)(dataBase DataBase){
 		params.Host + ":" + config.Get().Port,
 		params.DBName,
 		params.Charset)
-	db, err := sqlx.Open(config.Get().DriverName, dbConnectParams)
+	sqlQB, err := sqlx.Open(config.Get().DriverName, dbConnectParams)
 	if err != nil {
 		panic(errors.New("mysql connect error"))
 	}
-	dataBase.Core = db
+	qb := &QB{}
+	search := &Search{}
+	qb.Search = search
+	dataBase.QB = qb
+	dataBase.Core = sqlQB
 	return
 }
 
@@ -136,22 +140,26 @@ func (db DataBase) Find(modelPtr Model, ID interface{}){
 	if isPtr == false {
 		panic(errors.New("param not pointer"))
 	}
-	//sql, values := qb.BindModel(modelPtr).CoreWhere(db.Wheres)
-	//fmt.Println(.BindModel(modelPtr).CoreWhere(db.Wheres))
+	db.Where("id", ID)
+	fmt.Println(db.QB.BindModel(modelPtr).WhereSql())
 }
 
 func (db DataBase) Select(fieldNameParams ...string) DataBase{
-	qb := QB{}
 	fieldNameList := []string{}
 	for i:= 0; i < len(fieldNameParams) ; i++ {
 		fieldNameList = append(fieldNameList, "`" + fieldNameParams[i] + "`")
 	}
-	qb.CoreSelect(fieldNameList)
+	db.QB.CoreSelect(fieldNameList)
 	return db
 }
 
 
-func (db DataBase) Where(condition ...interface{}) *DataBase {
-	return db.search.Where(condition...)
+func (db DataBase) Where(condition ...interface{}) DataBase {
+	db.QB.Search.Where(condition...)
+	return db
+}
 
+func (db DataBase) OrWhere(condition ...interface{}) DataBase {
+	 db.QB.Search.OrWhere(condition...)
+	return db
 }

@@ -15,7 +15,7 @@ const (
 	IsNot   = "is not" // is not
 )
 type Search struct {
-	db *DataBase
+	DB *DataBase
 	orWheres []*OrWhereCondition
 	wheres []*WhereCondition
 }
@@ -45,7 +45,7 @@ func NewWhereCondition() *WhereCondition {
 	return whereCondition
 }
 
-func (search *Search) Where(condition ...interface{}) *DataBase {
+func (search *Search) Where(condition ...interface{}) *Search {
 	conditionLength := len(condition)
 	whereCondition := NewWhereCondition()
 	switch conditionLength {
@@ -72,11 +72,11 @@ func (search *Search) Where(condition ...interface{}) *DataBase {
 		panic(errors.New("condition number errors"))
 	}
 	search.wheres = append(search.wheres, whereCondition)
-	return search.db
+	return search
 }
 
 
-func (search *Search) OrWhere(condition ...interface{}) *DataBase {
+func (search *Search) OrWhere(condition ...interface{}) *Search {
 	conditionLength := len(condition)
 	orWhereCondition := NewOrWhereCondition()
 	switch conditionLength {
@@ -103,7 +103,7 @@ func (search *Search) OrWhere(condition ...interface{}) *DataBase {
 		panic(errors.New("condition number errors"))
 	}
 	search.orWheres = append(search.orWheres, orWhereCondition)
-	return search.db
+	return search
 }
 
 

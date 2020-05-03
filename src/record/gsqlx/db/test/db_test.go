@@ -67,17 +67,41 @@ func TestCreate(t *testing.T){
 	//db.Create()
 }
 
-func TestWhere(t *testing.T){
-	dba := db.NewDataBase(config.DBConnectParams{
-		DriverName: "mysql",
-		UserName:   "root",
-		Password:   "root",
-		Host:       "127.0.0.1",
-		Port:       "3306",
-		DBName:     "test",
-		Charset:    "utf8",
-	})
-	fmt.Println(dba.Where("aSD", "qWEQ") . Where("qwe", "Wt").first())
-	//db.Core.MustExec(schema)
-	//db.Create()
+
+func TestWhereSql(t *testing.T)  {
+	db := TestNewDB()
+	db.Where("id", 1)
+	db.Where("name", "张三").Where("password","123456")
+	sql, values := db.QB.WhereSql()
+	assert.Equal(t, " WHERE id=? AND name=? AND password=?", sql)
+	assert.Equal(t, []interface {}{1, "张三", "123456"}, values)
+}
+
+
+func TestOrWhereSql(t *testing.T)  {
+	db := TestNewDB()
+	db.OrWhere("name", "张三").OrWhere("password","123456")
+	sql, values := db.QB.WhereSql()
+	fmt.Println(sql)
+	assert.Equal(t, " WHERE name=? OR password=?", sql)
+	assert.Equal(t, []interface {}{"张三", "123456"}, values)
+}
+
+func TestWhereAndOrWhereSql(t *testing.T)  {
+	db := TestNewDB()
+	db.Where("id", 10).
+		OrWhere("name", "张三").
+		Where("address", "上海").
+		OrWhere("password","123456")
+	sql, values := db.QB.WhereSql()
+	fmt.Println(sql)
+	assert.Equal(t, " WHERE id=? AND address=? OR name=? OR password=?", sql)
+	assert.Equal(t, []interface {}{10, "上海", "张三", "123456"}, values)
+}
+
+
+func TestSelect(t *testing.T)  {
+	db := TestNewDB()
+	db.Select("id", "name", "created_at")
+	assert.Equal(t, db.QB.Select, "`id`,`name`,`created_at`")
 }
