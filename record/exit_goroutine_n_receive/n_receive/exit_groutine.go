@@ -10,7 +10,7 @@ import (
 
 var wg sync.WaitGroup
 func main()  {
-	jobs := make(chan int, 3)
+	jobs := make(chan int, 5)
 	// 开启3个接收者执行任务
 	for i := 0; i < 3; i++ {
 		go receive(jobs)
