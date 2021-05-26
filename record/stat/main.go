@@ -4,6 +4,9 @@ import (
 	"fmt"
 )
 
+/*
+要求统计1-8000的数字中，哪些是素数？将统计素数的任务分给4个协程去完成
+ */
 func main()  {
 	goroutineReceiveCount := 4
 	nums := make(chan int, 1000)
