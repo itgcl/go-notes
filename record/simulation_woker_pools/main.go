@@ -25,7 +25,6 @@ func main()  {
 	}
 	// 启动生成任务线程
 	go generateInt64(jobs)
-	fmt.Println(11)
 	for v := range results{
 		fmt.Println(v)
 	}
