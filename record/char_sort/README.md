@@ -18,7 +18,7 @@ select name from student order by CONVERT( name USING gbk ) COLLATE gbk_chinese_
 ```
 ### 排序方式二
 
-*实现思路*
+**实现思路**
 >获取第一个中文，把中文转成拼音，取拼音第一个字符。
 
 安装第三方包
