@@ -1,0 +1,96 @@
+package server
+
+import (
+	"context"
+	"errors"
+	pb "go-notes/record/grpc/v1/proto"
+	article "go-notes/record/grpc/v1/server/internal/service"
+	"net"
+	"time"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/metadata"
+)
+
+const (
+	Address    = "127.0.0.1:8181"
+	serverName = "grpc.article.v1.Article"
+	AppId      = "zhangsan"
+	AppKey     = "123456"
+)
+
+func Run() {
+	// 注册interceptor
+	opts := grpc.UnaryInterceptor(interceptor)
+	// 实例化server
+	server := grpc.NewServer(opts)
+	healthcheck := health.NewServer()
+	//healthServer.SetServingStatus("serverName", healthpb.HealthCheckResponse_SERVING)
+	healthpb.RegisterHealthServer(server, healthcheck)
+	// 实例化article service
+	service := article.NewService()
+	// 注册 article
+	pb.RegisterArticleServiceServer(server, service)
+	lis, err := net.Listen("tcp", Address)
+	if err != nil {
+		panic(err)
+	}
+	go simulationUnhealthyStatus(healthcheck)
+	if err := server.Serve(lis); err != nil {
+		panic(err)
+	}
+}
+
+// interceptor 拦截器
+func interceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	err := auth(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 继续处理请求
+	return handler(ctx, req)
+}
+
+// auth 验证Token
+func auth(ctx context.Context) error {
+	md, has := metadata.FromIncomingContext(ctx)
+	if has == false {
+		return errors.New("params error")
+	}
+	var (
+		appid  string
+		appkey string
+	)
+	if val, ok := md["appId"]; ok {
+		appid = val[0]
+	}
+	if val, ok := md["appKey"]; ok {
+		appkey = val[0]
+	}
+	if appid != appid || appkey != appkey {
+		return errors.New("username or password error")
+	}
+	return nil
+}
+
+// 模拟服务异常
+func simulationUnhealthyStatus(healthcheck *health.Server) {
+	go func() {
+		// asynchronously inspect dependencies and toggle serving status as needed
+		next := healthpb.HealthCheckResponse_SERVING
+
+		for {
+			healthcheck.SetServingStatus(serverName, next)
+
+			if next == healthpb.HealthCheckResponse_SERVING {
+				next = healthpb.HealthCheckResponse_NOT_SERVING
+			} else {
+				next = healthpb.HealthCheckResponse_SERVING
+			}
+
+			time.Sleep(time.Second * 5)
+		}
+	}()
+}
