@@ -3,6 +3,7 @@ package article
 import (
 	"context"
 	"errors"
+	"fmt"
 	pb "go-notes/record/grpc/v1/proto"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -11,10 +12,13 @@ import (
 
 type Service struct {
 	pb.UnimplementedArticleServiceServer
+	port int
 }
 
-func NewService() *Service {
-	return &Service{}
+func NewService(port int) *Service {
+	return &Service{
+		port: port,
+	}
 }
 
 func (s *Service) CreateArticle(ctx context.Context, req *pb.RequestCreateArticle) (*pb.ReplyCreateArticle, error) {
@@ -48,10 +52,9 @@ func (s *Service) QueryArticle(ctx context.Context, req *pb.RequestQueryArticle)
 	if err := s.checkId(req.ArticleId); err != nil {
 		return nil, err
 	}
-
 	return &pb.ReplyQueryArticle{
 		ArticleId: 1,
-		Title:     "让数字文明造福各国人民",
+		Title:     fmt.Sprintf("local:%d", s.port),
 		Content:   "字经济是全球未来的发展方向。习主席深刻洞察人类社会发展大势，为我们积极推动数字经济和生产生活深度融合指明了前进方向，也为国际社会共同迈向数字文明新时代贡献了中国方案，必将有力推动构建人类命运共同体。",
 		Author:    "张三",
 		IsShow:    true,

@@ -10,6 +10,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	_ "google.golang.org/grpc/health"
+	"google.golang.org/grpc/resolver"
+	"google.golang.org/grpc/resolver/manual"
 )
 
 // serviceName grpc服务端名称
@@ -25,36 +27,37 @@ func queryArticle(ctx context.Context, c pb.ArticleServiceClient) {
 	if err != nil {
 		fmt.Printf("queryArticle: %v, %s\n", r, err)
 	} else {
-		fmt.Printf("queryArticle: %s\n", r.Author)
+		fmt.Printf("queryArticle: %s, %s\n", r.Author, r.Title)
 	}
 }
 
 func main() {
 	var (
-		ctx     = context.Background()
-		options = []grpc.DialOption{
-			grpc.WithTransportCredentials(insecure.NewCredentials()),
-			grpc.WithBlock(),
-			grpc.WithDefaultServiceConfig(serviceConfig),
-		}
+		ctx = context.Background()
 	)
-	conn, err := grpc.Dial("127.0.0.1:8181", options...)
+	r := manual.NewBuilderWithScheme("whatever")
+	r.InitialState(resolver.State{
+		Addresses: []resolver.Address{
+			{Addr: "localhost:8181"},
+			{Addr: "localhost:8182"},
+		},
+	})
+	address := fmt.Sprintf("%s:///unused", r.Scheme())
+	options := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+		grpc.WithResolvers(r),
+		grpc.WithDefaultServiceConfig(serviceConfig),
+	}
+	conn, err := grpc.Dial(address, options...)
 	if err != nil {
 		log.Fatalf("grpc.Dial error: %v", err)
 	}
 	defer conn.Close()
 	c := pb.NewArticleServiceClient(conn)
 
-	//healthClient := healthpb.NewHealthClient(conn)
-	//ir := &healthpb.HealthCheckRequest{
-	//	Service: "aaaaaaa",
-	//}
-
 	for {
 		queryArticle(ctx, c)
-		//healthCheckResponse, err := healthClient.Check(context.Background(), ir)
-		//fmt.Println(healthCheckResponse, err)
 		time.Sleep(time.Second)
 	}
 }
-   

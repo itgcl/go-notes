@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.7
-// source: proto/service.proto
+// source: v1/proto/article.proto
 
 package proto
 
@@ -45,7 +45,7 @@ func NewArticleServiceClient(cc grpc.ClientConnInterface) ArticleServiceClient {
 
 func (c *articleServiceClient) CreateArticle(ctx context.Context, in *RequestCreateArticle, opts ...grpc.CallOption) (*ReplyCreateArticle, error) {
 	out := new(ReplyCreateArticle)
-	err := c.cc.Invoke(ctx, "/service.v1.ArticleService/CreateArticle", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/article.v1.ArticleService/CreateArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (c *articleServiceClient) CreateArticle(ctx context.Context, in *RequestCre
 
 func (c *articleServiceClient) UpdateArticle(ctx context.Context, in *RequestUpdateArticle, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/service.v1.ArticleService/UpdateArticle", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/article.v1.ArticleService/UpdateArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (c *articleServiceClient) UpdateArticle(ctx context.Context, in *RequestUpd
 
 func (c *articleServiceClient) DeleteArticle(ctx context.Context, in *RequestDeleteArticle, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/service.v1.ArticleService/DeleteArticle", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/article.v1.ArticleService/DeleteArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (c *articleServiceClient) DeleteArticle(ctx context.Context, in *RequestDel
 
 func (c *articleServiceClient) QueryArticle(ctx context.Context, in *RequestQueryArticle, opts ...grpc.CallOption) (*ReplyQueryArticle, error) {
 	out := new(ReplyQueryArticle)
-	err := c.cc.Invoke(ctx, "/service.v1.ArticleService/QueryArticle", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/article.v1.ArticleService/QueryArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func (c *articleServiceClient) QueryArticle(ctx context.Context, in *RequestQuer
 
 func (c *articleServiceClient) ArticleList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ReplyArticleList, error) {
 	out := new(ReplyArticleList)
-	err := c.cc.Invoke(ctx, "/service.v1.ArticleService/ArticleList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/article.v1.ArticleService/ArticleList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func _ArticleService_CreateArticle_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/service.v1.ArticleService/CreateArticle",
+		FullMethod: "/article.v1.ArticleService/CreateArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ArticleServiceServer).CreateArticle(ctx, req.(*RequestCreateArticle))
@@ -165,7 +165,7 @@ func _ArticleService_UpdateArticle_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/service.v1.ArticleService/UpdateArticle",
+		FullMethod: "/article.v1.ArticleService/UpdateArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ArticleServiceServer).UpdateArticle(ctx, req.(*RequestUpdateArticle))
@@ -183,7 +183,7 @@ func _ArticleService_DeleteArticle_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/service.v1.ArticleService/DeleteArticle",
+		FullMethod: "/article.v1.ArticleService/DeleteArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ArticleServiceServer).DeleteArticle(ctx, req.(*RequestDeleteArticle))
@@ -201,7 +201,7 @@ func _ArticleService_QueryArticle_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/service.v1.ArticleService/QueryArticle",
+		FullMethod: "/article.v1.ArticleService/QueryArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ArticleServiceServer).QueryArticle(ctx, req.(*RequestQueryArticle))
@@ -219,7 +219,7 @@ func _ArticleService_ArticleList_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/service.v1.ArticleService/ArticleList",
+		FullMethod: "/article.v1.ArticleService/ArticleList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ArticleServiceServer).ArticleList(ctx, req.(*emptypb.Empty))
@@ -231,7 +231,7 @@ func _ArticleService_ArticleList_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ArticleService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "service.v1.ArticleService",
+	ServiceName: "article.v1.ArticleService",
 	HandlerType: (*ArticleServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -256,5 +256,5 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/service.proto",
+	Metadata: "v1/proto/article.proto",
 }

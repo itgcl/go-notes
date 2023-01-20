@@ -3,6 +3,8 @@ package server
 import (
 	"context"
 	"errors"
+	"flag"
+	"fmt"
 	pb "go-notes/record/grpc/v1/proto"
 	article "go-notes/record/grpc/v1/server/internal/service"
 	"net"
@@ -15,13 +17,19 @@ import (
 )
 
 const (
-	Address    = "127.0.0.1:8181"
 	serverName = "grpc.article.v1.Article"
 	AppId      = "zhangsan"
 	AppKey     = "123456"
 )
 
+var (
+	port   = flag.Int("port", 8181, "the port to serve on")
+	sleep  = flag.Duration("sleep", time.Second*5, "duration between changes in health")
+	system = "" // empty string represents the health of the system
+)
+
 func Run() {
+	flag.Parse()
 	// 注册interceptor
 	opts := grpc.UnaryInterceptor(interceptor)
 	// 实例化server
@@ -30,10 +38,10 @@ func Run() {
 	//healthServer.SetServingStatus("serverName", healthpb.HealthCheckResponse_SERVING)
 	healthpb.RegisterHealthServer(server, healthcheck)
 	// 实例化article service
-	service := article.NewService()
+	service := article.NewService(*port)
 	// 注册 article
 	pb.RegisterArticleServiceServer(server, service)
-	lis, err := net.Listen("tcp", Address)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
 		panic(err)
 	}
@@ -90,7 +98,7 @@ func simulationUnhealthyStatus(healthcheck *health.Server) {
 				next = healthpb.HealthCheckResponse_SERVING
 			}
 
-			time.Sleep(time.Second * 5)
+			time.Sleep(*sleep)
 		}
 	}()
 }
