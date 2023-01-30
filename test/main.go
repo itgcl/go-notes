@@ -7,13 +7,13 @@ import "fmt"
 开启一个readChan协程，从管道中读取writeData写入的数据
 注意：writeData和readChan操作的是同一个管道
 主线程需要等待writeData和readData协程都完成工作才能退出【管道】
- */
+*/
 
 /*
 	发送者关闭通道 接收者处理通道关闭情况
 	不会出现发送者任务发送一半程序退出的情况, 因为主线程等待exitChannel数据 exitChannel在接收者完成后才会产生
 	接收者完成的情况是依据发送者发送完成并关闭通道 所以确保了发送者一定全部发送成功
- */
+*/
 
 // 1.
 //func main()  {
@@ -48,8 +48,8 @@ import "fmt"
 //	exitCh <- struct{}{}
 //}
 
-//2. 扩展 使用线程池(接收者)
-func main()  {
+// 2. 扩展 使用线程池(接收者)
+func main() {
 	routineCount := 5
 	ch := make(chan int, 20)
 	receivePassCh := make(chan struct{}, routineCount)
@@ -58,7 +58,7 @@ func main()  {
 		go receive(ch, receivePassCh)
 	}
 	total := 0
-	for range receivePassCh{
+	for range receivePassCh {
 		total++
 		if total == routineCount {
 			break
@@ -67,7 +67,7 @@ func main()  {
 	fmt.Println("收到程序结束")
 }
 
-func send(ch chan<- int)  {
+func send(ch chan<- int) {
 	for i := 0; i < 50; i++ {
 		ch <- i
 	}
@@ -75,10 +75,10 @@ func send(ch chan<- int)  {
 }
 
 // 线程数完成进行报告 完成报告数等于线程数 结束
-func receive(ch <-chan int, receivePassCh chan<- struct{})  {
+func receive(ch <-chan int, receivePassCh chan<- struct{}) {
 	for {
 		value, ok := <-ch
-		if ok == false {
+		if !ok {
 			break
 		}
 		fmt.Printf("value:%v\n", value)
@@ -86,7 +86,6 @@ func receive(ch <-chan int, receivePassCh chan<- struct{})  {
 	fmt.Println("接收完成信号")
 	receivePassCh <- struct{}{}
 }
-
 
 // TODO 目前使用了排它锁达到效果 不是很好需要修改
 // 3. 扩展 使用线程池(发送者)

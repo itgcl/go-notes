@@ -9,6 +9,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 // var articleClient pb.ArticleServiceClient
@@ -17,12 +18,12 @@ func NewClient() (pb.ArticleServiceClient, error) {
 	// 指定自定义认证
 	var opts []grpc.DialOption
 	// 开启安全的选项
-	opts = append(opts, grpc.WithInsecure())
+	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	// token验证
 	opts = append(opts, grpc.WithPerRPCCredentials(new(customerTokenAuth)))
 	// 连接rpc
-	articleCoon, err := grpc.DialContext(ctx, server.Address, opts...)
+	articleCoon, err := grpc.DialContext(ctx, "", opts...)
 	if err != nil {
 		return nil, err
 	}

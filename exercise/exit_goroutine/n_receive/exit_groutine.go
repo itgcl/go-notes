@@ -9,7 +9,8 @@ import (
 // n个接收者和一个发送者 通过close通知接收者通道关闭
 
 var wg sync.WaitGroup
-func main()  {
+
+func main() {
 	jobs := make(chan int, 5)
 	// 开启3个接收者执行任务
 	for i := 0; i < 3; i++ {
@@ -26,10 +27,10 @@ func main()  {
 
 }
 
-func receive(jobs <-chan int)  {
+func receive(jobs <-chan int) {
 	for {
-		value, ok := <- jobs
-		if ok == false {
+		value, ok := <-jobs
+		if !ok {
 			break
 		}
 		fmt.Println(value)

@@ -23,9 +23,8 @@ const (
 )
 
 var (
-	port   = flag.Int("port", 8181, "the port to serve on")
-	sleep  = flag.Duration("sleep", time.Second*5, "duration between changes in health")
-	system = "" // empty string represents the health of the system
+	port  = flag.Int("port", 8181, "the port to serve on")
+	sleep = flag.Duration("sleep", time.Second*5, "duration between changes in health")
 )
 
 func Run() {
@@ -64,7 +63,7 @@ func interceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInf
 // auth 验证Token
 func auth(ctx context.Context) error {
 	md, has := metadata.FromIncomingContext(ctx)
-	if has == false {
+	if !has {
 		return errors.New("params error")
 	}
 	var (
@@ -77,7 +76,7 @@ func auth(ctx context.Context) error {
 	if val, ok := md["appKey"]; ok {
 		appkey = val[0]
 	}
-	if appid != appid || appkey != appkey {
+	if appid != AppId || appkey != AppKey {
 		return errors.New("username or password error")
 	}
 	return nil
