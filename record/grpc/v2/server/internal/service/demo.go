@@ -23,7 +23,7 @@ func (s *Service) InputStream(req proto.StreamDemoService_InputStreamServer) err
 	for {
 		param, err := req.Recv()
 		if err == io.EOF {
-			log.Printf("recv EOF... %s\n", err)
+			log.Printf("input stream recv EOF... %s\n", err)
 			break
 		}
 		if err != nil {
@@ -32,7 +32,7 @@ func (s *Service) InputStream(req proto.StreamDemoService_InputStreamServer) err
 		}
 		sum += param.Value
 	}
-	log.Printf("for break...")
+	log.Printf("input stream for break...")
 	if err := req.SendAndClose(&proto.DataReply{Data: sum}); err != nil {
 		log.Printf("send and cloer error: %s\n", err)
 		return err
