@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package stream_demo.v1;
+
+option go_package = "go-notes/notes/grpc/v2/proto";
+
+service StreamDemoService {
+  // 客户端流模式：客户端发送多次请求，服务端响应一次
+  rpc InputStream(stream InputStreamRequest) returns (DataReply) {}
+  // 服务端流模式：客户端发送一个请求，服务端返回多次
+  rpc OutputStream(OutputStreamRequest) returns (stream DataReply) {}
+  // 服务端流模式：双向流，发送和接收同时进行，互不干扰
+  rpc BidirectionalStream(stream BidirectionalStreamRequest) returns (stream DataReply) {}
+}
+
+message InputStreamRequest {
+  int64 value = 1;
+}
+
+message OutputStreamRequest {
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message BidirectionalStreamRequest{
+  int64 x = 1;
+  int64 y = 2;
+}
+
+message DataReply{
+  int64 data = 1;
+}

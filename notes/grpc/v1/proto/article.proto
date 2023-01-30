@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package article.v1;
+import "google/protobuf/empty.proto";
+
+option go_package = "go-notes/notes/grpc/v1/proto";
+
+service ArticleService {
+  // 新建文章
+  rpc CreateArticle(RequestCreateArticle) returns (ReplyCreateArticle) {}
+  // 修改文章
+  rpc UpdateArticle(RequestUpdateArticle) returns (google.protobuf.Empty) {}
+  // 删除文章
+  rpc DeleteArticle(RequestDeleteArticle) returns (google.protobuf.Empty) {}
+  // 查询文章
+  rpc QueryArticle(RequestQueryArticle) returns (ReplyQueryArticle) {}
+  // 文章列表
+  rpc ArticleList(google.protobuf.Empty) returns (ReplyArticleList) {}
+}
+
+enum Type {
+  PLACEHOLDER = 0;
+  PROSE = 1;
+  LYRICS = 2;
+  NOVEL = 3;
+}
+
+/**
+ * 新建文章
+ */
+message RequestCreateArticle {
+  string title = 1;
+  string content = 2;
+  string author = 3;
+  bool is_show = 4;
+  Type type = 5;
+}
+
+message ReplyCreateArticle {
+  int64 article_id = 1;
+}
+
+/**
+ * 编辑文章
+ */
+message RequestUpdateArticle {
+  int64 article_id = 1;
+  string title = 2;
+  string content = 3;
+  string author = 4;
+  bool is_show = 5;
+  Type type = 6;
+}
+
+/**
+ * 删除文章
+ */
+message RequestDeleteArticle {
+  int64 article_id = 1;
+}
+
+/**
+ * 查询文章
+ */
+message RequestQueryArticle {
+  int64 article_id = 1;
+}
+
+message ReplyQueryArticle {
+  int64 article_id = 1;
+  string title = 2;
+  string content = 3;
+  string author = 4;
+  bool is_show = 5;
+  Type type = 6;
+}
+
+/**
+ * 文章列表
+ */
+message RequestArticleList {
+
+}
+
+message ReplyArticleList {
+  repeated ArticleItem data = 1;
+}
+
+message ArticleItem {
+  int64 article_id = 1;
+  string title = 2;
+  string content = 3;
+  string author = 4;
+  bool is_show = 5;
+  Type type = 6;
+}
