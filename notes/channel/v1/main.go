@@ -9,21 +9,21 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type Some struct {
+type Data struct {
 	AID int
 	BID int
 	CID int
 }
 
 func main() {
-	some()
+	example()
 }
 
-func some() {
+func example() {
 	group, ctx := errgroup.WithContext(context.Background())
 	ch := make(chan int, 1)
-	someBCh := make(chan *Some, 1)
-	someCCh := make(chan *Some, 1)
+	someBCh := make(chan *Data, 1)
+	someCCh := make(chan *Data, 1)
 	wg := &sync.WaitGroup{}
 	// 获取aid列表
 	group.Go(func() error {
@@ -92,19 +92,19 @@ func ListAID(ctx context.Context, ch chan<- int) error {
 	return nil
 }
 
-func ListBID(ctx context.Context, intList []int, ach chan<- *Some, wg *sync.WaitGroup) error {
+func ListBID(ctx context.Context, intList []int, ach chan<- *Data, wg *sync.WaitGroup) error {
 	defer wg.Done()
 	for _, i := range intList {
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
-		case ach <- &Some{AID: i, BID: i * 2, CID: 0}:
+		case ach <- &Data{AID: i, BID: i * 2, CID: 0}:
 		}
 	}
 	return nil
 }
 
-func listCID(ctx context.Context, ach <-chan *Some, bch chan<- *Some) error {
+func listCID(ctx context.Context, ach <-chan *Data, bch chan<- *Data) error {
 	for v := range ach {
 		v.CID = v.BID * 2
 		select {
@@ -116,7 +116,7 @@ func listCID(ctx context.Context, ach <-chan *Some, bch chan<- *Some) error {
 	return nil
 }
 
-func some2() {
+func example1() {
 	group, ctx := errgroup.WithContext(context.Background())
 	ch := make(chan int, 1)
 	// 生产
