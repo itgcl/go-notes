@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -78,17 +79,43 @@ func main() {
 		//fmt.Printf("%+v\n", recordList)
 	}
 	{
+		//err := s.UpdateOne(ctx)
+		//if err != nil {
+		//	log.Fatal(err)
+		//}
+	}
+	{
+		//err := s.UpdateByID(ctx)
+		//if err != nil {
+		//	log.Fatal(err)
+		//}
+	}
+	{
 		//err := s.UpdateMany(ctx)
 		//if err != nil {
 		//	log.Fatal(err)
 		//}
 	}
 	{
-		err := s.deleteOne(ctx)
+		//err := s.DeleteOne(ctx)
+		//if err != nil {
+		//	log.Fatal(err)
+		//}
+	}
+	{
+		//err := s.DeleteMany(ctx)
+		//if err != nil {
+		//	log.Fatal(err)
+		//}
+	}
+	{
+		recordList, err := s.FindManyGroup(ctx)
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Println(recordList, err)
 	}
+
 }
 
 func (s *Service) Collection() *mongo.Collection {
@@ -164,6 +191,39 @@ func (s *Service) FindManyWithIn(ctx context.Context) (interface{}, error) {
 	return s.FindManyBase(ctx, filter)
 }
 
+func (s *Service) FindManyGroup(ctx context.Context) (interface{}, error) {
+	var recordList []Record
+	filter := mongo.Pipeline{
+		bson.D{{
+			"$group", bson.D{
+				{"count", "$count"},
+				{"total", bson.D{
+					{"$sum", 1},
+				}},
+			},
+		}},
+	}
+	// 分页
+	cursor, err := s.Collection().Aggregate(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err := cursor.Close(ctx); err != nil {
+			log.Print(err)
+		}
+	}()
+	var results []bson.M
+	if err := cursor.All(ctx, &results); err != nil {
+		return nil, err
+	}
+	fmt.Println(results)
+	return recordList, err
+}
+
 func (s *Service) FindManyBase(ctx context.Context, d bson.D) (interface{}, error) {
 	var (
 		op         = options.Find()
@@ -186,6 +246,58 @@ func (s *Service) FindManyBase(ctx context.Context, d bson.D) (interface{}, erro
 		return nil, err
 	}
 	return recordList, err
+}
+
+func (s *Service) UpdateOne(ctx context.Context) error {
+	var (
+		filter = bson.D{{
+			Key:   "name",
+			Value: "a1",
+		}}
+		update = bson.D{{
+			Key: "$set",
+			Value: bson.D{{
+				Key:   "name",
+				Value: "aa11",
+			}},
+		}}
+	)
+	result, err := s.Collection().UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("ModifiedCount: %d, MatchedCount: %d, UpsertedCount: %d",
+		result.ModifiedCount, result.MatchedCount, result.UpsertedCount)
+	return nil
+}
+
+func (s *Service) UpdateByID(ctx context.Context) error {
+	var (
+		update = bson.D{{
+			Key: "$set",
+			Value: bson.D{
+				{
+					Key:   "name",
+					Value: "record1223333333",
+				},
+				{
+					Key:   "createdTime",
+					Value: time.Now(),
+				},
+			},
+		}}
+	)
+	id, err := primitive.ObjectIDFromHex("63dfa7d1ea8c7203feacf8cd")
+	if err != nil {
+		return err
+	}
+	result, err := s.Collection().UpdateByID(ctx, id, update)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("ModifiedCount: %d, MatchedCount: %d, UpsertedCount: %d",
+		result.ModifiedCount, result.MatchedCount, result.UpsertedCount)
+	return nil
 }
 
 func (s *Service) UpdateMany(ctx context.Context) error {
@@ -211,20 +323,41 @@ func (s *Service) UpdateMany(ctx context.Context) error {
 	return nil
 }
 
-func (s *Service) deleteOne(ctx context.Context) error {
+func (s *Service) DeleteOne(ctx context.Context) error {
 	var (
 		filter = bson.D{
 			{
 				Key:   "name",
-				Value: "record",
+				Value: "record2",
 			},
 			{
-				Key:   "count",
-				Value: 10,
+				Key:   "isTest",
+				Value: true,
 			},
 		}
 	)
 	result, err := s.Collection().DeleteOne(ctx, filter)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("DeletedCount: %d", result.DeletedCount)
+	return nil
+}
+
+func (s *Service) DeleteMany(ctx context.Context) error {
+	var (
+		filter = bson.D{
+			{
+				Key:   "name",
+				Value: "record2",
+			},
+			{
+				Key:   "isTest",
+				Value: true,
+			},
+		}
+	)
+	result, err := s.Collection().DeleteMany(ctx, filter)
 	if err != nil {
 		return err
 	}
