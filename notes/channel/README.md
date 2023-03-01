@@ -1,13 +1,13 @@
 # goroutine & channel使用
+
+https://go101.org/article/channel-closing.html
+
 整理一下实际开发中使用goroutine和channel的场景，归类为以下四种场景。
 
 1. 一个发送者和一个接收者
 2. 一个发送者和多个接收者
 3. 多个发送者和一个接收者
 4. 多个发送者和多个接收者
-
-
-TODO 空了写
 
 ## 一个发送者和一个接收者
 查看v1目录example方法。
