@@ -33,7 +33,10 @@ go run client/main.go
 
 
 ## gateway
-github: `https://github.com/grpc-ecosystem/grpc-gateway`
+
+查看v4目录
+
+grpc-gateway github: `https://github.com/grpc-ecosystem/grpc-gateway`
 
 项目根目录执行下面代码
 ### 生成go文件
