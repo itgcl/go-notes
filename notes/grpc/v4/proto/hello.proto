@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package heelworld.v1;
+import "google/api/annotations.proto";
+
+option go_package = "go-notes/notes/grpc/v1/proto";
+
+service HelloService {
+  rpc SayHello(SayHelloRequest) returns (SayHelloReply) {
+    option (google.api.http) = {
+      get: "/api/v1/hello"
+      response_body: "*"
+    };
+  }
+}
+
+message SayHelloRequest {
+  string name = 1;
+}
+
+message SayHelloReply {
+  string data = 1;
+}
+

@@ -1,13 +1,14 @@
 package main
 
 import (
-	"flag"
+	"database/sql"
+	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 func Download(w http.ResponseWriter, r *http.Request) {
@@ -30,12 +31,21 @@ func Download(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(333333333)
 }
 
-func main() {
-	flag.Parse()
+type Data struct {
+	t  sql.NullTime
+	t1 time.Time
+	t2 *time.Time
+}
 
-	http.HandleFunc("/", Download)
-	err := http.ListenAndServe(":8081", nil)
-	if nil != err {
-		log.Fatalln("Get Dir Err", err.Error())
-	}
+func main() {
+	defer func() {
+		var err error
+		fmt.Println("defer", err)
+	}()
+	err := demo()
+	fmt.Println("demo", err)
+}
+
+func demo() error {
+	return errors.New("aaa")
 }
