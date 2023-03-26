@@ -1,0 +1,12 @@
+
+name: "user-web"
+port: 9001
+
+user-svc:
+    name: "user"
+    port: 8081
+
+db:
+    address: "127.0.0.1:3306"
+    database: "users"
+    table: "user"
