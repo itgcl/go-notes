@@ -3,6 +3,7 @@ package article
 import (
 	"context"
 	"errors"
+
 	pb "go-notes/notes/grpc/v3/proto"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -78,12 +79,14 @@ func (s *Service) ArticleList(ctx context.Context, req *empty.Empty) (*pb.ReplyA
 	})
 	return reply, nil
 }
+
 func (s *Service) checkId(articleId int64) error {
 	if articleId != 1 {
 		return errors.New("articleId not exists")
 	}
 	return nil
 }
+
 func (s *Service) CheckType(articleType pb.Type) error {
 	switch articleType {
 	case pb.Type_PROSE:

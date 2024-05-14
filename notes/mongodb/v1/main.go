@@ -115,7 +115,6 @@ func main() {
 		}
 		fmt.Println(recordList, err)
 	}
-
 }
 
 func (s *Service) Collection() *mongo.Collection {
@@ -272,21 +271,19 @@ func (s *Service) UpdateOne(ctx context.Context) error {
 }
 
 func (s *Service) UpdateByID(ctx context.Context) error {
-	var (
-		update = bson.D{{
-			Key: "$set",
-			Value: bson.D{
-				{
-					Key:   "name",
-					Value: "record1223333333",
-				},
-				{
-					Key:   "createdTime",
-					Value: time.Now(),
-				},
+	update := bson.D{{
+		Key: "$set",
+		Value: bson.D{
+			{
+				Key:   "name",
+				Value: "record1223333333",
 			},
-		}}
-	)
+			{
+				Key:   "createdTime",
+				Value: time.Now(),
+			},
+		},
+	}}
 	id, err := primitive.ObjectIDFromHex("63dfa7d1ea8c7203feacf8cd")
 	if err != nil {
 		return err
@@ -324,18 +321,16 @@ func (s *Service) UpdateMany(ctx context.Context) error {
 }
 
 func (s *Service) DeleteOne(ctx context.Context) error {
-	var (
-		filter = bson.D{
-			{
-				Key:   "name",
-				Value: "record2",
-			},
-			{
-				Key:   "isTest",
-				Value: true,
-			},
-		}
-	)
+	filter := bson.D{
+		{
+			Key:   "name",
+			Value: "record2",
+		},
+		{
+			Key:   "isTest",
+			Value: true,
+		},
+	}
 	result, err := s.Collection().DeleteOne(ctx, filter)
 	if err != nil {
 		return err
@@ -345,18 +340,16 @@ func (s *Service) DeleteOne(ctx context.Context) error {
 }
 
 func (s *Service) DeleteMany(ctx context.Context) error {
-	var (
-		filter = bson.D{
-			{
-				Key:   "name",
-				Value: "record2",
-			},
-			{
-				Key:   "isTest",
-				Value: true,
-			},
-		}
-	)
+	filter := bson.D{
+		{
+			Key:   "name",
+			Value: "record2",
+		},
+		{
+			Key:   "isTest",
+			Value: true,
+		},
+	}
 	result, err := s.Collection().DeleteMany(ctx, filter)
 	if err != nil {
 		return err

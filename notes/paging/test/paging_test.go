@@ -1,8 +1,9 @@
 package paging__test
 
 import (
-	"go-notes/notes/paging"
 	"testing"
+
+	"go-notes/notes/paging"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -325,7 +326,6 @@ func TestPrevPage(t *testing.T) {
 		output := paging.Paginate(pagingData)
 		assert.Equal(t, output.PrevPage, 1)
 	}
-
 }
 
 func TestNextPage(t *testing.T) {

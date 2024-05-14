@@ -46,7 +46,7 @@ func example2() {
 	fmt.Printf("原数据：%d, 相减后：%d\n", v, v2)
 	// 读取值
 	fmt.Printf("load: %d\n", atomic.LoadInt64(&v))
-	//设置值
+	// 设置值
 	atomic.StoreInt64(&v, 33)
 	fmt.Printf("store: %d\n", v)
 	// 替换新值，返回旧值

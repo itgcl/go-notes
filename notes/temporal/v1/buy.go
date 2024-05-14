@@ -2,9 +2,11 @@ package buy
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
+	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/workflow"
 )
 
@@ -37,18 +39,52 @@ func DeductInventory(ctx context.Context, orderId string) error {
 func Workflow(ctx workflow.Context, orderId string) (string, error) {
 	// 设置工作超时时间 TODO StartToCloseTimeout或ScheduleToCloseTimeout二者必须设置一个，不然报错
 	ao := workflow.ActivityOptions{
-		StartToCloseTimeout: 10 * time.Second,
+		StartToCloseTimeout: 60 * time.Second,
+		HeartbeatTimeout:    time.Second * 5,
+		RetryPolicy: &temporal.RetryPolicy{
+			InitialInterval:    time.Second * 2,
+			BackoffCoefficient: 1.0,
+			MaximumAttempts:    3,
+			MaximumInterval:    time.Minute * 30,
+		},
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
-	//logger := workflow.GetLogger(ctx)
-	//logger.Info("HelloWorld workflow started", "orderId", orderId)
-
-	var result string
-	err := workflow.ExecuteActivity(ctx, Activity, orderId).Get(ctx, &result)
+	// logger := workflow.GetLogger(ctx)
+	// logger.Info("HelloWorld workflow started", "orderId", orderId)
+	result, err := v1(ctx, orderId)
+	fmt.Printf("result: %s, err: %v\n", result, err)
 	if err != nil {
-		fmt.Println("execution error:", err)
 		return "", err
 	}
+	//var result string
+	//err := workflow.ExecuteActivity(ctx, ActivityV1, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	//
+	//err = workflow.ExecuteActivity(ctx, ActivityV2, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+
+	//err = workflow.ExecuteActivity(ctx, ActivityV3, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	//
+	//err = workflow.ExecuteActivity(ctx, ActivityV4, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	//err = workflow.ExecuteActivity(ctx, ActivityV5, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
 	fmt.Println("workflow completed.", "result", result)
 	return result, nil
 }
@@ -74,4 +110,83 @@ func Activity(ctx context.Context, orderId string) (string, error) {
 	}
 
 	return "xxx", nil
+}
+
+func v1(ctx workflow.Context, orderId string) (string, error) {
+	var result string
+	err := workflow.ExecuteActivity(ctx, ActivityV1, orderId).Get(ctx, &result)
+	if err != nil {
+		fmt.Println("execution error:", err)
+		return "", err
+	}
+	//err = workflow.ExecuteActivity(ctx, ActivityV2, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	//err = workflow.ExecuteActivity(ctx, ActivityV3, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	//fmt.Println("start error")
+	return result, nil
+}
+
+func ActivityV1(ctx context.Context, name string) (string, error) {
+	fmt.Println("v1 order", name)
+	if err := Some11(ctx); err != nil {
+		return "", err
+	}
+	time.Sleep(time.Second * 2)
+	if err := Some22(ctx); err != nil {
+		return "", err
+	}
+	fmt.Println("v1 over")
+	return "v1111111", nil
+}
+
+func Some11(ctx context.Context) error {
+	fmt.Println("11 some")
+	return nil
+}
+
+func Some22(ctx context.Context) error {
+	fmt.Println("22 some")
+	return errors.New("some2 error")
+}
+
+var count = 0
+
+func ActivityV2(ctx context.Context, name string) (string, error) {
+	fmt.Println("v2 orderid", name)
+	time.Sleep(time.Second * 2)
+	fmt.Println("v2 over")
+	//count++
+	//if count > 3 {
+	//	return "v222222", nil
+	//}
+	return "v222222222", errors.New("xxxxxxxxx")
+}
+
+func ActivityV3(ctx context.Context, name string) (string, error) {
+	fmt.Println(" v3 orderid", name)
+	return "", errors.New("111111111111")
+	time.Sleep(time.Second * 2)
+	fmt.Println("v3 over")
+	return "v3333333", nil
+}
+
+func ActivityV4(ctx context.Context, name string) (string, error) {
+	fmt.Println(" v4 orderid", name)
+	time.Sleep(time.Second * 8)
+	fmt.Println(" v4 over")
+	return "v44444", nil
+}
+
+func ActivityV5(ctx context.Context, name string) (string, error) {
+	fmt.Println(" v5 orderid", name)
+	time.Sleep(time.Second * 10)
+	fmt.Println(" v5 over")
+	return "v555555", nil
 }

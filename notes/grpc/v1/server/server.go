@@ -5,10 +5,11 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	pb "go-notes/notes/grpc/v1/proto"
-	article "go-notes/notes/grpc/v1/server/internal/service"
 	"net"
 	"time"
+
+	pb "go-notes/notes/grpc/v1/proto"
+	article "go-notes/notes/grpc/v1/server/internal/service"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -34,7 +35,7 @@ func Run() {
 	// 实例化server
 	server := grpc.NewServer(opts)
 	healthcheck := health.NewServer()
-	//healthServer.SetServingStatus("serverName", healthpb.HealthCheckResponse_SERVING)
+	// healthServer.SetServingStatus("serverName", healthpb.HealthCheckResponse_SERVING)
 	healthpb.RegisterHealthServer(server, healthcheck)
 	// 实例化article service
 	service := article.NewService(*port)

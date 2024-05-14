@@ -36,21 +36,22 @@ func GetPtrElem(ptr interface{}) (prtValue reflect.Value, isPtr bool) {
 	isPtr = true
 	return
 }
+
 func (db DataBase) Create(modelPtr Model) {
 	db.coreCreate(modelPtr)
 }
 
 func (db DataBase) coreCreate(modelPtr Model) {
-	//获取指针值
+	// 获取指针值
 	valueOf, isPtr := GetPtrElem(modelPtr)
 	if !isPtr {
 		panic(errors.New("param not pointer"))
 	}
 	typeOf := reflect.TypeOf(modelPtr)
 	insertData := make(map[string]interface{})
-	//遍历结构体参数
+	// 遍历结构体参数
 	for i := 0; i < valueOf.NumField(); i++ {
-		//获取标签
+		// 获取标签
 		tagValue := typeOf.Field(i).Tag.Get("db")
 		if tagValue == "" {
 			panic(errors.New("tag not exists"))
@@ -86,16 +87,16 @@ func (db DataBase) CoreUpdate(modelPtr Model) {
 	}
 	typeOf := reflect.TypeOf(modelPtr)
 	updateData := make(map[string]interface{})
-	//判断id是否存在
+	// 判断id是否存在
 	var ID interface{}
 	if valueOf.FieldByName("ID").Interface() == "" {
 		panic(errors.New("update id not exists"))
 	} else {
 		ID = valueOf.FieldByName("ID").Interface()
 	}
-	//遍历结构体参数
+	// 遍历结构体参数
 	for i := 0; i < valueOf.NumField(); i++ {
-		//获取标签
+		// 获取标签
 		tagValue := typeOf.Field(i).Tag.Get("db")
 		if tagValue == "" {
 			panic(errors.New("tag not exists"))
@@ -105,26 +106,22 @@ func (db DataBase) CoreUpdate(modelPtr Model) {
 	qb := QB{}
 	qb.Update = updateData
 	sqlStr, sqlValueList := qb.BindModel(modelPtr).GetUpdate()
-	//TODO 还没有实现where 这里id没有使用
+	// TODO 还没有实现where 这里id没有使用
 	_ = ID
 	newResult, err := db.Core.Exec(sqlStr, sqlValueList...)
 	if err != nil {
 		panic(err)
 	}
 	_ = newResult
-
 }
 
 func (DataBase) Delete() {
-
 }
 
 func (DataBase) OneID(id interface{}) {
-
 }
 
 func (db DataBase) Find(modelPtr Model, ID interface{}) {
-
 	_, isPtr := GetPtrElem(modelPtr)
 	if !isPtr {
 		panic(errors.New("param not pointer"))

@@ -10,7 +10,7 @@ type Student struct {
 	Name string
 }
 
-func (s Student) Hello(){
+func (s Student) Hello() {
 	fmt.Println("我是一个学生")
 }
 
@@ -36,7 +36,7 @@ func main() {
 	}
 
 	// 通过.NumMethod()来获取Student里头的方法
-	for i:=0;i<t.NumMethod(); i++ {
+	for i := 0; i < t.NumMethod(); i++ {
 		m := t.Method(i)
 
 		fmt.Println(v.MethodByName(m.Name).Call([]reflect.Value{}))

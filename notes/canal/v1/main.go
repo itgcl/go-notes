@@ -75,10 +75,12 @@ func (r box) set(key, val string) {
 func (r box) Get(key string) string {
 	return r[key]
 }
+
 func (r box) GetInt(key string) (int64, error) {
 	x := r.Get(key)
 	return strconv.ParseInt(x, 10, 64)
 }
+
 func (r box) GetBool(key string) (bool, error) {
 	x := r.Get(key)
 	return strconv.ParseBool(x)

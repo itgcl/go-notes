@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	pb "go-notes/notes/grpc/v1/proto"
 	"log"
 	"time"
+
+	pb "go-notes/notes/grpc/v1/proto"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -32,9 +33,7 @@ func queryArticle(ctx context.Context, c pb.ArticleServiceClient) {
 }
 
 func main() {
-	var (
-		ctx = context.Background()
-	)
+	ctx := context.Background()
 	r := manual.NewBuilderWithScheme("whatever")
 	r.InitialState(resolver.State{
 		Addresses: []resolver.Address{

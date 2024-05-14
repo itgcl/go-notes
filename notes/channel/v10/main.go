@@ -14,12 +14,12 @@ type Data struct {
 }
 
 func main() {
-	var stringsSlice = []string{"a", "b", "c"}
+	stringsSlice := []string{"a", "b", "c"}
 	channelsMap := make(map[string]Data)
 	var wg sync.WaitGroup
 	wg.Add(len(stringsSlice))
 	for _, value := range stringsSlice {
-		//channelsMap[value] = make(chan *TestStruct, 1)
+		// channelsMap[value] = make(chan *TestStruct, 1)
 		channelsMap[value] = Data{
 			Test:  make(chan *TestStruct, 1),
 			Group: value,

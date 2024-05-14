@@ -41,7 +41,7 @@ func example() {
 			// 达到阈值，异步获取数据
 			if len(data) == threshold {
 				wg.Add(1)
-				var sendData = make([]int, threshold)
+				sendData := make([]int, threshold)
 				copy(sendData, data)
 				data = data[:0]
 				// 异步获取cid数据

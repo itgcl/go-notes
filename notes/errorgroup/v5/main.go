@@ -32,7 +32,7 @@ func demo() {
 
 // for range 元素始终使用同一块内存，goroutine没执行，for就执行了下一次循环，导致some的值从1->2->3
 func demo2() {
-	var someList = []Some{
+	someList := []Some{
 		{1},
 		{2},
 		{3},

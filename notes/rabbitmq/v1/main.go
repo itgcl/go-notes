@@ -13,9 +13,7 @@ import (
 const MQ_URI = "amqp://guest:guest@127.0.0.1:5672/test?connection_attempts=10"
 
 func main() {
-	var (
-		ctx = context.Background()
-	)
+	ctx := context.Background()
 	producers := NewProducers(ctx, Conf{
 		addr:          MQ_URI,
 		exchange:      "parser.excel.headers",

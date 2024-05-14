@@ -3,16 +3,15 @@ package server
 import (
 	"flag"
 	"fmt"
+	"net"
+
 	pb "go-notes/notes/grpc/v2/proto"
 	demo "go-notes/notes/grpc/v2/server/internal/service"
-	"net"
 
 	"google.golang.org/grpc"
 )
 
-var (
-	port = flag.Int("port", 8181, "the port to serve on")
-)
+var port = flag.Int("port", 8181, "the port to serve on")
 
 func Run() {
 	flag.Parse()

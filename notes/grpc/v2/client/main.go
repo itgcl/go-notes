@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	pb "go-notes/notes/grpc/v2/proto"
 	"io"
 	"log"
 	"time"
+
+	pb "go-notes/notes/grpc/v2/proto"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -14,9 +15,7 @@ import (
 )
 
 func main() {
-	var (
-		ctx = context.Background()
-	)
+	ctx := context.Background()
 	options := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
@@ -48,7 +47,6 @@ func main() {
 		err = c.BidirectionalStream(ctx)
 		fmt.Println(err)
 	}
-
 }
 
 type Client struct {
@@ -61,7 +59,7 @@ func NewClient(sc pb.StreamDemoServiceClient) *Client {
 
 // InputStream 输入流
 func (c *Client) InputStream(ctx context.Context) (*pb.DataReply, error) {
-	var list = []*pb.InputStreamRequest{
+	list := []*pb.InputStreamRequest{
 		{Value: 1},
 		{Value: 2},
 		{Value: 3},

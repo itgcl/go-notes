@@ -19,7 +19,7 @@ type Data struct {
 var count int
 
 func main() {
-	var stringsSlice = []string{"a", "b", "c", "d", "a", "b"}
+	stringsSlice := []string{"a", "b", "c", "d", "a", "b"}
 	channelsMap := make(map[string]Data)
 	group, _ := errgroup.WithContext(context.Background())
 	group.Go(func() error {
@@ -29,7 +29,7 @@ func main() {
 			}
 		}()
 		for _, value := range stringsSlice {
-			//wg.Add(1)
+			// wg.Add(1)
 			func() {
 				_, exists := channelsMap[value]
 				if !exists {

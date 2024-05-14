@@ -1,10 +1,11 @@
 package demo
 
 import (
-	"go-notes/notes/grpc/v2/proto"
-	pb "go-notes/notes/grpc/v2/proto"
 	"io"
 	"log"
+
+	"go-notes/notes/grpc/v2/proto"
+	pb "go-notes/notes/grpc/v2/proto"
 )
 
 type Service struct {

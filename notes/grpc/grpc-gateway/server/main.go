@@ -4,11 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"go-notes/notes/grpc/grpc-gateway/internal/service"
-	"go-notes/notes/grpc/grpc-gateway/proto"
 	"log"
 	"net"
 	"net/http"
+
+	"go-notes/notes/grpc/grpc-gateway/internal/service"
+	"go-notes/notes/grpc/grpc-gateway/proto"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -16,8 +17,10 @@ import (
 	// Update
 )
 
-var grpcPort = flag.Int("grpc_port", 9001, "the port to serve on")
-var httpPort = flag.Int("http_port", 8080, "the port to restful serve on")
+var (
+	grpcPort = flag.Int("grpc_port", 9001, "the port to serve on")
+	httpPort = flag.Int("http_port", 8080, "the port to restful serve on")
+)
 
 func main() {
 	server := grpc.NewServer()

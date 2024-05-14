@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-func main()  {
+func main() {
 	// 1个接收者和n个发送者 通过close通知接收者通道关闭
 	jobs := make(chan int)
 
@@ -17,19 +17,19 @@ func main()  {
 	}
 }
 
-func receive(jobs <-chan int)  {
+func receive(jobs <-chan int) {
 	// 只处理50个任务
 	limit := 10
 	var completeCount int
 
-	for limit > completeCount{
+	for limit > completeCount {
 		completeCount++
-		value := <- jobs
+		value := <-jobs
 		fmt.Println(value)
 	}
 }
 
-func send(jobs chan<- int)  {
+func send(jobs chan<- int) {
 	for {
 		jobs <- rand.Intn(10)
 	}

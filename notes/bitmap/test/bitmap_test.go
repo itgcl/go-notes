@@ -2,9 +2,10 @@ package test
 
 import (
 	"fmt"
-	"go-notes/notes/bitmap"
 	"log"
 	"testing"
+
+	"go-notes/notes/bitmap"
 
 	"github.com/stretchr/testify/assert"
 )

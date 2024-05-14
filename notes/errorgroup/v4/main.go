@@ -6,11 +6,13 @@ import (
 	"log"
 	"time"
 
+	"github.com/samber/lo"
 	"golang.org/x/sync/errgroup"
 )
 
 func main() {
-	err := Handler2(context.Background())
+	lo.Intersect()
+	err := Handler(context.Background())
 	fmt.Println(err)
 }
 
@@ -65,6 +67,7 @@ func Handler2(ctx context.Context) error {
 	)
 	group, ctx := errgroup.WithContext(ctx)
 	for _, id := range idList {
+		id := id
 		workerChan <- struct{}{}
 		group.Go(func() error {
 			defer func() { <-workerChan }()

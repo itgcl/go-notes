@@ -2,11 +2,11 @@ package test
 
 import (
 	"fmt"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 
 	"go-notes/notes/gsqlx/db"
-	"testing"
 )
 
 func TestDBConnect(t *testing.T) {

@@ -4,11 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	pb "go-notes/notes/grpc/v3/proto"
-	article "go-notes/notes/grpc/v3/server/internal/service"
 	"log"
 	"net"
 	"runtime/debug"
+
+	pb "go-notes/notes/grpc/v3/proto"
+	article "go-notes/notes/grpc/v3/server/internal/service"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
@@ -19,10 +20,10 @@ import (
 func Run() {
 	flag.Parse()
 	// 注册interceptor
-	//var opts []grpc.ServerOption
-	//opts = append(opts, grpc.UnaryInterceptor(interceptor))
+	// var opts []grpc.ServerOption
+	// opts = append(opts, grpc.UnaryInterceptor(interceptor))
 	// 实例化server
-	//server := grpc.NewServer(opts...)
+	// server := grpc.NewServer(opts...)
 	server := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			interceptor,

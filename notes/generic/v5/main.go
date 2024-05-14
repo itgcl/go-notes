@@ -10,6 +10,7 @@ func channelGen[T valueType]() chan T {
 	ch := make(chan T)
 	return ch
 }
+
 func sum[T valueType](ch chan T, values []T) {
 	var result T
 	for _, v := range values {
@@ -17,6 +18,7 @@ func sum[T valueType](ch chan T, values []T) {
 	}
 	ch <- result
 }
+
 func main() {
 	data1 := []int32{10, 20, 30, 40, 50}
 	data2 := []float32{10.1, 20.2, 30.3, 40.4, 50.5}

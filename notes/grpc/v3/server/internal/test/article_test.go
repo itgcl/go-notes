@@ -2,9 +2,10 @@ package test
 
 import (
 	"context"
+	"testing"
+
 	pb "go-notes/notes/grpc/v3/proto"
 	"go-notes/notes/grpc/v3/server"
-	"testing"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/stretchr/testify/assert"
@@ -28,7 +29,7 @@ func NewClient() (pb.ArticleServiceClient, error) {
 		return nil, err
 	}
 	// TODO 正常来说rpcClient是一个全局变量，此时为了方便省略
-	//defer articleCoon.Close()
+	// defer articleCoon.Close()
 	articleClient := pb.NewArticleServiceClient(articleCoon)
 	return articleClient, nil
 }
@@ -62,7 +63,6 @@ func TestCreateArticle(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.NotEqual(t, int64(2), reply.ArticleId)
 	assert.Equal(t, int64(1), reply.ArticleId)
-
 }
 
 func TestUpdateArticle(t *testing.T) {

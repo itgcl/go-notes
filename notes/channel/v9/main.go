@@ -10,7 +10,7 @@ type TestStruct struct {
 }
 
 func main() {
-	var stringsSlice = []string{"a", "b", "c"}
+	stringsSlice := []string{"a", "b", "c"}
 	channelsMap := make(map[string]chan *TestStruct)
 
 	//for i := 1; i <= 10; i++ {

@@ -115,10 +115,10 @@ func (qb QB) WhereSql() (sql string, sqlValues []interface{}) {
 }
 
 func (qb QB) CoreFind(ID interface{}) (sql string, sqlValues []interface{}) {
-	//select * from table where aa = 'aa' and bb = 'bb'
+	// select * from table where aa = 'aa' and bb = 'bb'
 	sql = `SELECT ` + qb.Select + ` from ` + qb.Table
 	qb.Search.Where("id", ID)
-	//sqlWhere, values := qb.WhereSql(qb.Search.wheres)
+	// sqlWhere, values := qb.WhereSql(qb.Search.wheres)
 
 	return
 }

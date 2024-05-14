@@ -61,7 +61,7 @@ func example() {
 
 	// 接收者
 	for i := 0; i < NumReceivers; i++ {
-		//i := i
+		// i := i
 		group.Go(func() error {
 			for {
 				select {

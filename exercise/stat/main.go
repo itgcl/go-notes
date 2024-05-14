@@ -32,7 +32,6 @@ func main() {
 		fmt.Println(value)
 	}
 	fmt.Println("结束")
-
 }
 
 func putNum(nums chan<- int) {

@@ -17,7 +17,7 @@ func main() {
 			fmt.Println("write")
 			return nil
 		})
-		//time.Sleep(time.Second)
+		// time.Sleep(time.Second)
 		fmt.Println("defer")
 		return nil
 	})

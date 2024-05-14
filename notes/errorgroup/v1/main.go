@@ -41,5 +41,4 @@ func server(ctx context.Context) error {
 }
 
 func worker() {
-
 }

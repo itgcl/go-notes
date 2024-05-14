@@ -11,6 +11,7 @@ type HelloService struct{}
 func NewHelloService() *HelloService {
 	return &HelloService{}
 }
+
 func (h *HelloService) Hello(req string, reply *string) error {
 	*reply = "hello: " + req
 	return nil

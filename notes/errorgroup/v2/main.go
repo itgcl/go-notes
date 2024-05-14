@@ -11,9 +11,8 @@ import (
 
 func main() {
 	worker(context.Background())
-	//f, err := os.Create("/tmp/ww.zip")
-	//fmt.Println(f, err)
-
+	// f, err := os.Create("/tmp/ww.zip")
+	// fmt.Println(f, err)
 }
 
 func worker(ctx context.Context) error {
@@ -27,7 +26,7 @@ func worker(ctx context.Context) error {
 				return err
 			}
 
-			//defer func() {
+			// defer func() {
 			defer func() {
 				fmt.Println("defer")
 				f.Close()
@@ -37,8 +36,8 @@ func worker(ctx context.Context) error {
 				time.Sleep(time.Second)
 				fmt.Println("write")
 				f.WriteString("a")
-				//fmt.Println("go start", i)
-				//time.Sleep(time.Second * 2)
+				// fmt.Println("go start", i)
+				// time.Sleep(time.Second * 2)
 				return nil
 			})
 		}
