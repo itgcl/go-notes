@@ -27,6 +27,7 @@ func main() {
 	// w := worker.New(c, "test", worker.Options{BuildID: "1.1", UseBuildIDForVersioning: true})
 	// 注册 workflow和activity
 	w.RegisterWorkflow(buy.Workflow)
+	w.RegisterWorkflow(buy.ChildWorkflow)
 	w.RegisterActivity(buy.Activity)
 	w.RegisterActivity(buy.ActivityV1)
 	w.RegisterActivity(buy.ActivityV2)

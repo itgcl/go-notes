@@ -29,11 +29,16 @@ func main() {
 	defer c.Close()
 	// 设置workflowID和队列名
 	workflowOptions := client.StartWorkflowOptions{
-		ID:                  "9",
+		ID:                  "20",
 		TaskQueue:           "test",
 		WorkflowRunTimeout:  time.Minute * 5,
 		WorkflowTaskTimeout: time.Hour * 24,
 	}
+	//err = c.TerminateWorkflow(context.Background(), "ChildWorkflow-10000", "","自定义错误信息")
+	//if err != nil {
+	//	log.Fatalln("Unable to terminate workflow", err)
+	//}
+	//return
 
 	//ctx := context.Background()
 	// First, let's make the task queue use the build id versioning feature by adding an initial
@@ -74,7 +79,7 @@ func main() {
 	//if err != nil {
 	//	log.Fatalln("Unable to update worker build id compatibility", err)
 	//}
-	orderID := "10000"
+	orderID := "33"
 	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, "Workflow", orderID)
 	if err != nil {
 		log.Fatalln("Unable to execute workflow", err)

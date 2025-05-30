@@ -37,8 +37,8 @@ func SignalSelect(ctx workflow.Context) error {
 	)
 	// 创建Temporal客户端
 	c, err := client.Dial(client.Options{
-		HostPort:  "xx",
-		Namespace: "xx",
+		HostPort:  "localhost:7233",
+		Namespace: "default",
 	})
 	if err != nil {
 		return err

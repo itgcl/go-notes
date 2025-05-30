@@ -49,8 +49,32 @@ func Workflow(ctx workflow.Context, orderId string) (string, error) {
 		},
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
-	// logger := workflow.GetLogger(ctx)
-	// logger.Info("HelloWorld workflow started", "orderId", orderId)
+
+	//cwo := workflow.ChildWorkflowOptions{
+	//	// TaskQueue: "compliance-detection",
+	//	RetryPolicy: &temporal.RetryPolicy{
+	//		InitialInterval:    time.Second * 30, // 间隔时间30秒
+	//		BackoffCoefficient: 2.0,              // 退避系数2
+	//		MaximumAttempts:    5,                // 最大重试次数5次
+	//		MaximumInterval:    time.Hour,        // 最大执行时间1小时
+	//	},
+	//	WorkflowID: fmt.Sprintf("ChildWorkflow-%s", orderId),
+	//}
+
+	// cctx = workflow.WithChildOptions(ctx, cwo)
+	//if err := workflow.ExecuteChildWorkflow(cctx, ChildWorkflow, orderId).Get(ctx, nil); err != nil {
+	//	if temporal.IsTerminatedError(err) {
+	//		fmt.Println("child workflow terminated:", err)
+	//	} else {
+	//		fmt.Println("child workflow exec  error", err)
+	//		return "", err
+	//	}
+	//}
+
+	ctx = workflow.WithValue(ctx, "test", "qwe")
+	logger := workflow.GetLogger(ctx)
+
+	logger.Info("HelloWorld workflow started", "orderId", orderId)
 	result, err := v1(ctx, orderId)
 	fmt.Printf("result: %s, err: %v\n", result, err)
 	if err != nil {
@@ -86,7 +110,60 @@ func Workflow(ctx workflow.Context, orderId string) (string, error) {
 	//	return "", err
 	//}
 	fmt.Println("workflow completed.", "result", result)
-	return result, nil
+	return "", nil
+}
+
+func ChildWorkflow(ctx workflow.Context, orderId string) error {
+	// 设置工作超时时间 TODO StartToCloseTimeout或ScheduleToCloseTimeout二者必须设置一个，不然报错
+	//ao := workflow.ActivityOptions{
+	//	StartToCloseTimeout: 60 * time.Second,
+	//	HeartbeatTimeout:    time.Second * 5,
+	//	RetryPolicy: &temporal.RetryPolicy{
+	//		InitialInterval:    time.Second * 2,
+	//		BackoffCoefficient: 1.0,
+	//		MaximumAttempts:    3,
+	//		MaximumInterval:    time.Minute * 30,
+	//	},
+	//}
+	//ctx = workflow.WithActivityOptions(ctx, ao)
+	// logger := workflow.GetLogger(ctx)
+	// logger.Info("HelloWorld workflow started", "orderId", orderId)
+	//err := workflow.ExecuteActivity(ctx, ActivityV1, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	//
+	//err = workflow.ExecuteActivity(ctx, ActivityV2, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+
+	//err = workflow.ExecuteActivity(ctx, ActivityV3, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	//
+	//err = workflow.ExecuteActivity(ctx, ActivityV4, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	//err = workflow.ExecuteActivity(ctx, ActivityV5, orderId).Get(ctx, &result)
+	//if err != nil {
+	//	fmt.Println("execution error:", err)
+	//	return "", err
+	//}
+	fmt.Println("time sleep start")
+	err := workflow.Sleep(ctx, time.Second*120)
+	if err != nil {
+		fmt.Println("sleep error", err)
+		return err
+	}
+	fmt.Println("child workflow completed.", orderId)
+	return nil
 }
 
 func Activity(ctx context.Context, orderId string) (string, error) {
@@ -114,6 +191,7 @@ func Activity(ctx context.Context, orderId string) (string, error) {
 
 func v1(ctx workflow.Context, orderId string) (string, error) {
 	var result string
+	fmt.Println("v1 value: ", ctx.Value("test"))
 	err := workflow.ExecuteActivity(ctx, ActivityV1, orderId).Get(ctx, &result)
 	if err != nil {
 		fmt.Println("execution error:", err)
@@ -135,13 +213,14 @@ func v1(ctx workflow.Context, orderId string) (string, error) {
 
 func ActivityV1(ctx context.Context, name string) (string, error) {
 	fmt.Println("v1 order", name)
-	if err := Some11(ctx); err != nil {
-		return "", err
-	}
-	time.Sleep(time.Second * 2)
-	if err := Some22(ctx); err != nil {
-		return "", err
-	}
+	//if err := Some11(ctx); err != nil {
+	//	return "", err
+	//}
+	//time.Sleep(time.Second * 2)
+	//if err := Some22(ctx); err != nil {
+	//	return "", err
+	//}
+	fmt.Println(ctx.Value("test"), "get ctx value")
 	fmt.Println("v1 over")
 	return "v1111111", nil
 }
